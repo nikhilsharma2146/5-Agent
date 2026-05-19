@@ -38,6 +38,10 @@ st.markdown("""
         max-width: 100% !important;
         height: 100vh !important;
     }
+    /* Force Streamlit HTML wrappers to span full viewport height */
+    div[data-testid="stHtml"], div[data-testid="stHtml"] > div {
+        height: 100vh !important;
+    }
     header {
         display: none !important;
     }
@@ -160,4 +164,4 @@ def get_compiled_html():
 
 # Load and display the complete self-contained React app
 html_content = get_compiled_html()
-components.html(html_content, height=1080, scrolling=False)
+components.html(html_content, height=1200, scrolling=True)
