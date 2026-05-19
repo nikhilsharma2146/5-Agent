@@ -1,0 +1,27 @@
+const fs = require('fs');
+const path = require('path');
+
+function walk(dir) {
+  let results = [];
+  const list = fs.readdirSync(dir);
+  list.forEach(function(file) {
+    file = path.join(dir, file);
+    const stat = fs.statSync(file);
+    if (stat && stat.isDirectory()) { 
+      results = results.concat(walk(file));
+    } else if (file.endsWith('.jsx')) {
+      results.push(file);
+    }
+  });
+  return results;
+}
+
+const files = walk('./src');
+files.forEach(file => {
+  let content = fs.readFileSync(file, 'utf8');
+  // replace backslash followed by backtick with just backtick
+  content = content.replace(/\\`/g, '`');
+  // replace backslash followed by dollar sign with just dollar sign
+  content = content.replace(/\\\$/g, '$');
+  fs.writeFileSync(file, content);
+});
