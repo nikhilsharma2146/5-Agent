@@ -95,15 +95,27 @@ def get_compiled_html():
         robot_base64 = get_base64_data_uri("public/robot.png", "image/png")
         favicon_base64 = get_base64_data_uri("public/favicon.svg", "image/svg+xml")
         
-        # Replace image links in JS code to inline data URIs
+        # Replace image links in JS code to inline data URIs using all quote and backtick variants
         if logo_base64:
             js_content = js_content.replace('"/logo.png"', f'"{logo_base64}"')
+            js_content = js_content.replace("'/logo.png'", f"'{logo_base64}'")
+            js_content = js_content.replace('`/logo.png`', f'`{logo_base64}`')
             js_content = js_content.replace('"/public/logo.png"', f'"{logo_base64}"')
+            
         if robot_base64:
             js_content = js_content.replace('"/robot.png"', f'"{robot_base64}"')
+            js_content = js_content.replace("'/robot.png'", f"'{robot_base64}'")
+            js_content = js_content.replace('`/robot.png`', f'`{robot_base64}`')
             js_content = js_content.replace('"/public/robot.png"', f'"{robot_base64}"')
+            js_content = js_content.replace('url(/robot.png)', f'url({robot_base64})')
+            js_content = js_content.replace('url("/robot.png")', f'url({robot_base64})')
+            js_content = js_content.replace("url('/robot.png')", f"url({robot_base64})")
+            js_content = js_content.replace('url(`/robot.png`)', f'url({robot_base64})')
+            
         if favicon_base64:
             js_content = js_content.replace('"/favicon.svg"', f'"{favicon_base64}"')
+            js_content = js_content.replace("'/favicon.svg'", f"'{favicon_base64}'")
+            js_content = js_content.replace('`/favicon.svg`', f'`{favicon_base64}`')
             js_content = js_content.replace('"/public/favicon.svg"', f'"{favicon_base64}"')
             
         # Replace scripts tags with inline js script tag safely without regex escaping errors
@@ -113,6 +125,12 @@ def get_compiled_html():
             script_tag = match.group(0)
             inline_script = f'<script type="module">{js_content}</script>'
             html = html.replace(script_tag, inline_script)
+            
+        # Replace icon links in outer HTML head
+        if logo_base64:
+            html = html.replace('href="/logo.png"', f'href="{logo_base64}"')
+        if favicon_base64:
+            html = html.replace('href="/favicon.svg"', f'href="{favicon_base64}"')
         
     # Get dynamic API Keys from secrets or env
     groq_key = os.getenv("VITE_GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
