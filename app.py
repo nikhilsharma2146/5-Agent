@@ -19,7 +19,7 @@ st.set_page_config(
 # Custom styles to hide standard Streamlit padding and make the iframe fullscreen
 st.markdown("""
 <style>
-    /* Fullscreen iframe styles */
+    /* Fullscreen iframe styles and container overrides */
     iframe {
         width: 100% !important;
         height: 100vh !important;
@@ -32,15 +32,24 @@ st.markdown("""
         padding: 0 !important;
         overflow: hidden !important;
         background-color: #020408 !important;
+        height: 100vh !important;
     }
     .block-container {
         padding: 0 !important;
         max-width: 100% !important;
         height: 100vh !important;
     }
-    /* Force Streamlit HTML wrappers to span full viewport height */
-    div[data-testid="stHtml"], div[data-testid="stHtml"] > div {
+    /* Force all parent Streamlit structural divs to fit exactly 100vh and disable outer scrollbars */
+    [data-testid="stVerticalBlock"], 
+    [data-testid="stVerticalBlockBorderWrapper"], 
+    .element-container, 
+    div[data-testid="stHtml"], 
+    div[data-testid="stHtml"] > div {
         height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     header {
         display: none !important;
