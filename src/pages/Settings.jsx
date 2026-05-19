@@ -8,21 +8,20 @@ const Settings = () => {
   const [soundEffects, setSoundEffects] = useState(false);
 
   useEffect(() => {
-    const envGeminiKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GEMINI_API_KEY) || import.meta.env.VITE_GEMINI_API_KEY;
-    const localGeminiKey = localStorage.getItem('gemini_api_key');
-    if (envGeminiKey && envGeminiKey !== 'your_api_key_here') {
-      setGeminiKey(envGeminiKey);
-    } else if (localGeminiKey) {
-      setGeminiKey(localGeminiKey);
-    }
+    const cleanKey = (k) => {
+      if (!k || k === 'your_groq_api_key_here' || k === 'your_gemini_api_key_here' || k === 'your_api_key_here') {
+        return '';
+      }
+      return k.trim();
+    };
 
-    const envGroqKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GROQ_API_KEY) || import.meta.env.VITE_GROQ_API_KEY;
-    const localGroqKey = localStorage.getItem('groq_api_key');
-    if (envGroqKey) {
-      setGroqKey(envGroqKey);
-    } else if (localGroqKey) {
-      setGroqKey(localGroqKey);
-    }
+    const localGeminiKey = cleanKey(localStorage.getItem('gemini_api_key'));
+    const envGeminiKey = cleanKey((window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GEMINI_API_KEY) || import.meta.env.VITE_GEMINI_API_KEY);
+    setGeminiKey(localGeminiKey || envGeminiKey);
+
+    const localGroqKey = cleanKey(localStorage.getItem('groq_api_key'));
+    const envGroqKey = cleanKey((window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GROQ_API_KEY) || import.meta.env.VITE_GROQ_API_KEY);
+    setGroqKey(localGroqKey || envGroqKey);
 
     const savedProvider = localStorage.getItem('api_provider') || 'groq';
     setSelectedProvider(savedProvider);

@@ -190,8 +190,16 @@ const ChatInterface = ({ activeAgentId, onSelectAgent }) => {
     if (!text.trim() || loading) return;
 
     const provider = localStorage.getItem('api_provider') || 'groq';
-    const groqKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GROQ_API_KEY) || import.meta.env.VITE_GROQ_API_KEY || localStorage.getItem('groq_api_key');
-    const geminiKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GEMINI_API_KEY) || import.meta.env.VITE_GEMINI_API_KEY || localStorage.getItem('gemini_api_key');
+    
+    const cleanKey = (k) => {
+      if (!k || k === 'your_groq_api_key_here' || k === 'your_gemini_api_key_here' || k === 'your_api_key_here') {
+        return '';
+      }
+      return k.trim();
+    };
+
+    const groqKey = cleanKey(localStorage.getItem('groq_api_key') || (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GROQ_API_KEY) || import.meta.env.VITE_GROQ_API_KEY);
+    const geminiKey = cleanKey(localStorage.getItem('gemini_api_key') || (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GEMINI_API_KEY) || import.meta.env.VITE_GEMINI_API_KEY);
 
     let apiKey, errorMsg;
     if (provider === 'groq') {
@@ -202,7 +210,7 @@ const ChatInterface = ({ activeAgentId, onSelectAgent }) => {
       errorMsg = "Error: No Gemini API key found. Please configure in Settings.";
     }
 
-    if (!apiKey || apiKey === 'your_api_key_here') {
+    if (!apiKey) {
       setMessages(prev => [...prev, { role: 'user', content: text }, { role: 'assistant', content: errorMsg }]);
       setInput('');
       return;
