@@ -8,7 +8,7 @@ const Settings = () => {
   const [soundEffects, setSoundEffects] = useState(false);
 
   useEffect(() => {
-    const envGeminiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const envGeminiKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GEMINI_API_KEY) || import.meta.env.VITE_GEMINI_API_KEY;
     const localGeminiKey = localStorage.getItem('gemini_api_key');
     if (envGeminiKey && envGeminiKey !== 'your_api_key_here') {
       setGeminiKey(envGeminiKey);
@@ -16,7 +16,7 @@ const Settings = () => {
       setGeminiKey(localGeminiKey);
     }
 
-    const envGroqKey = import.meta.env.VITE_GROQ_API_KEY;
+    const envGroqKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GROQ_API_KEY) || import.meta.env.VITE_GROQ_API_KEY;
     const localGroqKey = localStorage.getItem('groq_api_key');
     if (envGroqKey) {
       setGroqKey(envGroqKey);

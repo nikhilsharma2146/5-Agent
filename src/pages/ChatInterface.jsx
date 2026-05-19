@@ -190,8 +190,8 @@ const ChatInterface = ({ activeAgentId, onSelectAgent }) => {
     if (!text.trim() || loading) return;
 
     const provider = localStorage.getItem('api_provider') || 'groq';
-    const groqKey = import.meta.env.VITE_GROQ_API_KEY || localStorage.getItem('groq_api_key');
-    const geminiKey = import.meta.env.VITE_GEMINI_API_KEY || localStorage.getItem('gemini_api_key');
+    const groqKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GROQ_API_KEY) || import.meta.env.VITE_GROQ_API_KEY || localStorage.getItem('groq_api_key');
+    const geminiKey = (window.STREAMLIT_ENV && window.STREAMLIT_ENV.VITE_GEMINI_API_KEY) || import.meta.env.VITE_GEMINI_API_KEY || localStorage.getItem('gemini_api_key');
 
     let apiKey, errorMsg;
     if (provider === 'groq') {
