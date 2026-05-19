@@ -106,10 +106,13 @@ def get_compiled_html():
             js_content = js_content.replace('"/favicon.svg"', f'"{favicon_base64}"')
             js_content = js_content.replace('"/public/favicon.svg"', f'"{favicon_base64}"')
             
-        # Replace scripts tags with inline js script tag
+        # Replace scripts tags with inline js script tag safely without regex escaping errors
         script_pattern = r'<script[^>]+src=["\']/assets/[^"\']+["\'][^>]*></script>'
-        inline_script = f'<script type="module">{js_content}</script>'
-        html = re.sub(script_pattern, inline_script, html)
+        match = re.search(script_pattern, html)
+        if match:
+            script_tag = match.group(0)
+            inline_script = f'<script type="module">{js_content}</script>'
+            html = html.replace(script_tag, inline_script)
         
     # Get dynamic API Keys from secrets or env
     groq_key = os.getenv("VITE_GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
